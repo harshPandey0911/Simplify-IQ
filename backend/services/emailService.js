@@ -30,6 +30,7 @@ export async function sendAuditEmail(leadData, pdfPath) {
       connectionTimeout: 5000,
       greetingTimeout: 5000
     });
+  } else {
     console.log("[Email Service] SMTP credentials not set in env. Bypassing Ethereal completely for faster response.");
     transporter = null;
   }

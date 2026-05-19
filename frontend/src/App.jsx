@@ -61,7 +61,7 @@ export default function App() {
           }
           return prev;
         });
-      }, 1500); // Progress to next step every 1.5 seconds
+      }, 2500); // Progress to next step every 2.5 seconds to match backend timing
     } else {
       setActiveStep(0);
     }
@@ -121,11 +121,9 @@ export default function App() {
 
       console.log("[Client] Backend automation pipeline completed successfully!", data);
       
-      // Delay success slightly for high-impact transition after progress
-      setTimeout(() => {
-        setResult(data.data);
-        setStatus('success');
-      }, 1000);
+      // Immediately transition to success dashboard
+      setResult(data.data);
+      setStatus('success');
 
     } catch (err) {
       console.error("[Client] Lead submission collapsed:", err.message);
