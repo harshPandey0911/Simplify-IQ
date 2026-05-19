@@ -100,8 +100,10 @@ export default function App() {
     setStatus('processing');
     
     try {
-      console.log("[Client] Dispatching lead intake form payload to API...");
-      const response = await fetch('http://localhost:5050/api/leads', {
+      const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:5050'
+        : '';
+      const response = await fetch(`${apiBase}/api/leads`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

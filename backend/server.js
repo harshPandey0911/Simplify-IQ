@@ -53,8 +53,11 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Ensure the local temp downloads directory exists
-const tempDir = path.join(__dirname, 'temp');
+// Ensure the temp downloads directory exists (uses OS temp dir on Vercel to avoid read-only filesystem error)
+const tempDir = process.env.VERCEL === '1'
+  ? path.join('/tmp', 'downloads')
+  : path.join(__dirname, 'temp');
+
 if (!fs.existsSync(tempDir)) {
   fs.mkdirSync(tempDir, { recursive: true });
   console.log(`[Server] Created temp downloads directory at: ${tempDir}`);
@@ -151,9 +154,13 @@ app.post('/api/leads', async (req, res) => {
 });
 
 // Start the Express Server (Active Real Gmail SMTP Enabled)
-app.listen(PORT, () => {
-  console.log(`=================================================`);
-  console.log(` SimplifIQ Automation Server Active on Port ${PORT}`);
-  console.log(` Health Status: http://localhost:${PORT}/api/health`);
-  console.log(`=================================================`);
-});
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    console.log(`=================================================`);
+    console.log(` SimplifIQ Automation Server Active on Port ${PORT}`);
+    console.log(` Health Status: http://localhost:${PORT}/api/health`);
+    console.log(`=================================================`);
+  });
+}
+
+export default app;
