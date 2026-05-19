@@ -100,9 +100,8 @@ export default function App() {
     setStatus('processing');
     
     try {
-      const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:5050'
-        : '';
+      // Use the environment variable if available, otherwise fall back to relative paths for Vercel
+      const apiBase = import.meta.env.VITE_API_URL || '';
       const response = await fetch(`${apiBase}/api/leads`, {
         method: 'POST',
         headers: {
