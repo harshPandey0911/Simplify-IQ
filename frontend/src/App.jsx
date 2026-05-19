@@ -100,8 +100,11 @@ export default function App() {
     setStatus('processing');
     
     try {
-      // Use the environment variable if available, otherwise fall back to relative paths for Vercel
-      const apiBase = import.meta.env.VITE_API_URL || '';
+      // Clean up VITE_API_URL to prevent double /api/api/ issues
+      let apiBase = import.meta.env.VITE_API_URL || '';
+      if (apiBase.endsWith('/')) apiBase = apiBase.slice(0, -1);
+      if (apiBase.endsWith('/api')) apiBase = apiBase.slice(0, -4);
+      
       const response = await fetch(`${apiBase}/api/leads`, {
         method: 'POST',
         headers: {
