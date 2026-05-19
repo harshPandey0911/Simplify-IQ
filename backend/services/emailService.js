@@ -35,12 +35,16 @@ export async function sendAuditEmail(leadData, pdfPath) {
     isEthereal = true;
     try {
       // 4-second timeout wrapper for Ethereal account creation
-      const testAccountPromise = nodemailer.createTestAccount();
+      const testAccountPromise = nodemailer.createTestAccount().catch(err => {
+        console.warn(`[Email Service] Background Ethereal setup failed: ${err.message}`);
+        return null; // Swallow error to prevent unhandled rejection crash
+      });
       const timeoutPromise = new Promise((_, reject) => 
         setTimeout(() => reject(new Error('Ethereal API Timeout')), 4000)
       );
       
       testAccount = await Promise.race([testAccountPromise, timeoutPromise]);
+      if (!testAccount) throw new Error("Ethereal background setup failed");
       
       transporter = nodemailer.createTransport({
         host: 'smtp.ethereal.email',
