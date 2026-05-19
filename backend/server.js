@@ -160,9 +160,11 @@ app.post('/api/leads', async (req, res) => {
   }
 });
 
-// Start the Express Server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Start the Express Server locally or on Render (Bypass on Vercel)
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
 
 export default app;
