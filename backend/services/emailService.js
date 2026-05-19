@@ -26,7 +26,9 @@ export async function sendAuditEmail(leadData, pdfPath) {
       auth: {
         user: smtpUser,
         pass: smtpPass
-      }
+      },
+      connectionTimeout: 5000,
+      greetingTimeout: 5000
     });
   } else {
     console.log("[Email Service] SMTP credentials not set in env. Creating standard Ethereal sandbox account...");
@@ -47,7 +49,9 @@ export async function sendAuditEmail(leadData, pdfPath) {
         auth: {
           user: testAccount.user,
           pass: testAccount.pass
-        }
+        },
+        connectionTimeout: 5000,
+        greetingTimeout: 5000
       });
     } catch (err) {
       console.warn(`[Email Service] Ethereal sandbox bypassed or timed out: ${err.message}. Switching to Resilient Mock Delivery.`);
@@ -146,12 +150,12 @@ export async function sendAuditEmail(leadData, pdfPath) {
       };
     }
   } catch (err) {
-    console.warn(`[Email Service] SMTP dispatch encountered error: ${err.message}. Falling back to Mock Delivery.`);
+    console.warn(`[Email Service] SMTP dispatch encountered error or timed out: ${err.message}. Falling back to Mock Delivery.`);
     return {
       success: true,
       messageId: `fallback_transact_${Date.now()}`,
-      previewUrl: "https://ethereal.email/messages",
-      isEthereal: true
+      previewUrl: null, // No preview available if mock
+      isEthereal: false
     };
   }
 }
